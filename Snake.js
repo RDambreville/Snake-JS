@@ -1,16 +1,64 @@
 import * as DrawService from '../draw.js'; 
 
-// ====================== Method definitions =====================
 
-function checkIfServiceLoaded() {
-    DrawService.checkIfLoaded();
-}
+/**=============================================================== 
+ * ====================== Method Calls =========================== 
+ * =============================================================== */ 
 
-function openAlert() {
-    alert('alert opened!');
-    checkIfServiceLoaded();
-}
+ // Set clock for game loop, set player, and set screen
+ setupGame();
 
-// ======================== Method calls =========================
+// Add click event listener to play button
 document.querySelector('#checkButton')
-    .addEventListener('click', openAlert);
+    .addEventListener('click', startGame);
+
+
+
+/**=============================================================== 
+ * ====================== Method definitions ===================== 
+ * =============================================================== */ 
+
+function setupGame() {
+    // Draw initial play screen
+    initPlayScreen();
+}
+
+function initPlayScreen() {
+    DrawService.setupCanvas();
+    drawStartScreen();
+}
+
+function drawStartScreen() {
+    drawHeadsUpDisplay();
+    drawPlayer();
+    drawFood();
+}
+
+function drawHeadsUpDisplay() {
+
+
+}
+
+function drawPlayer(x, y, length) {
+    
+}
+
+function drawFood(x, y) {
+    
+}
+
+
+function startGame() {
+
+
+}
+
+// function checkIfServiceLoaded() {
+//     DrawService.checkIfLoaded();
+// }
+
+// function openAlert() {
+//     alert('alert opened!');
+//     checkIfServiceLoaded();
+// }
+
