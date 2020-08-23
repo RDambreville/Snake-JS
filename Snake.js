@@ -1,7 +1,17 @@
-import * as DrawService from '../draw'; 
+import * as DrawService from '../draw.js'; 
 
-export function checkIfServiceLoaded() {
+function checkIfServiceLoaded() {
     // checkIfLoaded();
-    DrawService.checkIfLoaded()
+    DrawService.checkIfLoaded();
     // alert('Draw service loaded!!');
 }
+
+function openAlert() {
+    alert('alert opened!');
+    checkIfServiceLoaded();
+}
+
+document.querySelector('#checkButton')
+    .addEventListener('click', openAlert);
+
+// checkIfServiceLoaded();
