@@ -1,9 +1,9 @@
 import * as DrawService from '../draw.js'; 
 
+// ====================== Method definitions =====================
+
 function checkIfServiceLoaded() {
-    // checkIfLoaded();
     DrawService.checkIfLoaded();
-    // alert('Draw service loaded!!');
 }
 
 function openAlert() {
@@ -11,7 +11,6 @@ function openAlert() {
     checkIfServiceLoaded();
 }
 
+// ======================== Method calls =========================
 document.querySelector('#checkButton')
     .addEventListener('click', openAlert);
-
-// checkIfServiceLoaded();
