@@ -11,8 +11,8 @@ import { ScreenState } from './models/screen-state.js';
 
 let score;
 let clock;
-const player = new Player();
-const food = new Food()
+let player = new Player();
+let food = new Food()
 
 
 
@@ -31,6 +31,7 @@ document.querySelector('#start-button')
 // document.querySelector('#play-surface')
 //     .addEventListener('keypress', updateSnakeDirection).bind(); // Don't add parentheses to the method call
 
+// Add keyup event listener to page for directional keys
 document.querySelector('body')
     .addEventListener('keyup', updateSnakeDirection); // Don't add parentheses to the method call
 
@@ -86,7 +87,16 @@ function startGameLoop() {
 }
 
 function checkAndUpdateGameState() {
+    if (isPlayerOutOfBounds() || hasPlayerHitSelf()) {
+        player.crash();
+    }
+
     if (isGameOver()) {
+        console.log('player head', player.head);
+        console.log('min horizontal', DrawService.getMinHorzontalPosition());
+        console.log('max horizontal', DrawService.getMaxHorzontalPosition());
+        console.log('max vertical', DrawService.getMaxVerticalPosition());
+        console.log('min vertical', DrawService.getMinVerticalPosition());
         endTheGame();
         return;
     }
@@ -103,9 +113,26 @@ function checkAndUpdateGameState() {
         case 'down': player.head.y++; break;
         case 'left': player.head.x--; break;
         case 'right': player.head.x++; break;
+
+        // TOO FAST
+        // case 'up': player.head.y -= 5; break;
+        // case 'down': player.head.y += 5; break;
+        // case 'left': player.head.x -= 5; break;
+        // case 'right': player.head.x += 5; break;
         default: break;
     }
     updateScreen();
+}
+
+function isPlayerOutOfBounds() {
+    return player.head.x >= DrawService.getMaxHorzontalPosition() ||
+        player.head.x <= DrawService.getMinHorzontalPosition() ||
+        player.head.y >= DrawService.getMinVerticalPosition() ||
+        player.head.y <= DrawService.getMaxVerticalPosition();
+}
+
+function hasPlayerHitSelf() {
+    return false;
 }
 
 function updateScreen() {
@@ -128,6 +155,7 @@ function updateSnakeDirection(keyUpEvent) {
         case 'ArrowRight': player.setDirectionString('right'); break;
         default: player.setDirectionString(null); // keep the direction the same
     }
+    console.log('snake head', player.head);
 }
 
 function isGameOver() {
@@ -145,8 +173,8 @@ function endTheGame() {
 }
 
 function releaseResources() {
-    player = null;
-    food = null;
+    player = new Player();
+    food = new Food();
     clock = null;
 }
 
