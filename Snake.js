@@ -51,31 +51,36 @@ function setupGame() {
 
 function initPlayScreen() {
     DrawService.setupCanvas();
-    const screenState = new ScreenState(player, score, food)
-    console.log('screenState', screenState);
+    // const screenState = new ScreenState(player, score, food)
+    // console.log('screenState', screenState);
     clearScreen();
-    drawCurrentScreenState(screenState);
+    drawCurrentScreenState(/*screenState*/);
 }
 
 function clearScreen() {
-    DrawService.clearCanvas()
+    DrawService.clearCanvas();
 }
 
-function drawCurrentScreenState(screenState) {
-    drawHeadsUpDisplay(screenState.score);
-    drawPlayer(screenState.player);
-    drawFood(screenState.food);
+function drawCurrentScreenState(/*screenState*/) {
+    drawHeadsUpDisplay(/*screenState.score*/);
+    drawPlayer(/*screenState.player*/);
+    drawFood(/*screenState.food*/);
 }
 
-function drawHeadsUpDisplay(score) {
+function drawHeadsUpDisplay(/*score*/) {
     DrawService.drawText(`Score: ${score}`, 0, 20);
 }
 
-function drawPlayer(player) {
+function drawPlayer(/*player*/) {
+    // Draw the snake's head
     DrawService.drawRectangle(player.head.x, player.head.y, 5, 5);
+
+    // Draw the snake's body
+    
+    
 }
 
-function drawFood(food) {
+function drawFood(/*food*/) {
     DrawService.drawRectangle(food.x, food.y, food.width, food.height)
 }
 
@@ -147,10 +152,40 @@ function hasPlayerHitSelf() {
     return false;
 }
 
+function isGameOver() {
+    return player.hasCrashed();
+}
+
+function endTheGame() {
+    clearInterval(clock); // Stop game loop
+    const xTextCoordinate = DrawService.getMaxHorzontalPosition() / 2;
+    const yTextCoordinate = DrawService.getMinVerticalPosition() / 2
+    DrawService.drawText('Game Over!', xTextCoordinate, yTextCoordinate);
+    releaseResources();
+}
+
+function releaseResources() {
+    score = 0;
+    player = new Player();
+    food = new Food();
+    clock = null;
+}
+
+
+function wasFoodEaten() {
+    // return player.head.x === food.x && player.head.y === food.y;
+    // Hacky estimation
+    // Player just needs to be in ballpark to get a point.
+    // If the distance between the player and food is within
+    // the marginOfSuccess, then award a point;
+    const marginOfSuccess = GameConfig.marginOfSuccess; // pixels
+    return Math.abs(player.head.x - food.x) < marginOfSuccess && Math.abs(player.head.y - food.y) < marginOfSuccess;
+}
+
 function updateScreen() {
-    const screenState = new ScreenState(player, score, food);
+    // const screenState = new ScreenState(player, score, food);
     clearScreen();
-    drawCurrentScreenState(screenState);
+    drawCurrentScreenState(/*screenState*/);
 }
 
 function updateSnakeDirection(keyUpEvent) {
@@ -169,42 +204,4 @@ function updateSnakeDirection(keyUpEvent) {
     }
     console.log('snake head', player.head);
 }
-
-function isGameOver() {
-    return player.hasCrashed();
-}
-
-function wasFoodEaten() {
-    // return player.head.x === food.x && player.head.y === food.y;
-
-    const marginOfSuccess = 2 /*0.5*/;
-    // Hacky estimation
-    // Player just needs to be in ballpark to get a point.
-    //  If the absolute differences between the player's and food's x and y coordinates are within
-    // the marginOfSuccess, then award a point;
-    return Math.abs(player.head.x - food.x) < marginOfSuccess && Math.abs(player.head.y - food.y) < marginOfSuccess;
-}
-
-function endTheGame() {
-    clearInterval(clock); // Stop game loop
-    // alert('Game Over');
-    DrawService.drawText('Game Over!', DrawService.getMaxHorzontalPosition() / 2 , DrawService.getMinVerticalPosition() / 2);
-    releaseResources();
-}
-
-function releaseResources() {
-    score = 0;
-    player = new Player();
-    food = new Food();
-    clock = null;
-}
-
-// function checkIfServiceLoaded() {
-//     DrawService.checkIfLoaded();
-// }
-
-// function openAlert() {
-//     alert('alert opened!');
-//     checkIfServiceLoaded();
-// }
 

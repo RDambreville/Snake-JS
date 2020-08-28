@@ -4,6 +4,11 @@
  * 
  */
 
+
+ /**=============================================================
+ * ==================== Game Mechanics ========================== 
+ * ============================================================== 
+ **/ 
  export let gameSpeed = 0.5; // Time (in miliseconds) to update the screen. Low value => high game speed, High value => low game speed
 
  export let foodSize = 5; // Width and height of food square
@@ -17,6 +22,14 @@
 
  export let lengthToAddToPlayer = 2; // Amount by which to increase snake length after eating food
 
+ export let marginOfSuccess = 2; // Ballpark distance away from food the player's x and y coordinates need to be to earn a point
+
+ 
+
+ /**=============================================================
+ * ============================= UI ============================= 
+ * ============================================================== 
+ **/ 
  export let isDarkMode = true;
 
  export let canvasHeight = '75%';
