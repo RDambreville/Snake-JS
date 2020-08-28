@@ -9,9 +9,10 @@ import { ScreenState } from './models/screen-state.js';
  * =============================================================== 
  **/ 
 
-var score;
-var clock;
-const player = new Player(2, 'up');
+let score;
+let clock;
+const player = new Player();
+const food = new Food()
 
 
 
@@ -20,12 +21,18 @@ const player = new Player(2, 'up');
  * =============================================================== 
  **/ 
 
- // Set clock for game loop, set player, and set screen
-//  setupGame();
+
+ setupGame();   // Set initial game screen
 
 // Add click event listener to play button
-document.querySelector('#checkButton')
-    .addEventListener('click', /*startGameLoop*/ setupGame); // don't add parentheses to the method call
+document.querySelector('#start-button')
+    .addEventListener('click', startGameLoop); // Don't add parentheses to the method call
+
+// document.querySelector('#play-surface')
+//     .addEventListener('keypress', updateSnakeDirection).bind(); // Don't add parentheses to the method call
+
+document.querySelector('body')
+    .addEventListener('keyup', updateSnakeDirection); // Don't add parentheses to the method call
 
 
 
@@ -36,29 +43,13 @@ document.querySelector('#checkButton')
 
 function setupGame() {
     score = 0;
-    initPlayScreen();
-    setGameClock();
-    // Draw initial play screen
+    initPlayScreen();   // Draw initial play screen
 }
 
-function setGameClock() {
-    clock = setInterval(updateScreen, 3); // don't use parentheses with the method call
-}
-
-function updateScreen() {
-        score++;
-        console.log('score', score);
-        const food = new Food(Math.random() % 100 + 1, Math.random() % 100 + 1, GameConfig.foodSize, GameConfig.foodSize);
-        const screenState = new ScreenState(player, score, food);
-        clearScreen();
-        drawCurrentScreenState(screenState);
-
-}
 
 
 function initPlayScreen() {
     DrawService.setupCanvas();
-    const food = new Food(50, 50, GameConfig.foodSize, GameConfig.foodSize );
     const screenState = new ScreenState(player, score, food)
     console.log('screenState', screenState);
     clearScreen();
@@ -73,13 +64,6 @@ function drawCurrentScreenState(screenState) {
     drawHeadsUpDisplay(screenState.score);
     drawPlayer(screenState.player);
     drawFood(screenState.food);
-}
-
-function drawStartScreen() {
-//     drawHeadsUpDisplay();
-//     drawPlayer();
-//     drawFood();
-// }
 }
 
 function drawHeadsUpDisplay(score) {
@@ -97,28 +81,64 @@ function drawFood(food) {
 
 function startGameLoop() {
     alert('Game loop started!');
-    while(!isGameOver()) {
-        // if (wasFoodEaten()) {
-        //     score++; // TODO remove
-        //     const food = new Food(Math.random() % 100, Math.random() % 100, GameConfig.foodSize, GameConfig.foodSize);
-        // }
+    // Call checkGameState every GameConfig.gameSpeed miliseconds
+    clock = setInterval(checkAndUpdateGameState, GameConfig.gameSpeed); // Don't use parentheses with the method call
+}
 
-        // if ()
-        score++;
-        console.log('score', score);
-        const food = new Food(Math.random() % 100 + 1, Math.random() % 100 + 1, GameConfig.foodSize, GameConfig.foodSize);
-        const screenState = new ScreenState(player, score, food);
-        clearScreen();
-        drawCurrentScreenState(screenState);
-
-
+function checkAndUpdateGameState() {
+    if (isGameOver()) {
+        endTheGame();
+        return;
     }
-    alert('Game Over!');
 
+    if (wasFoodEaten()) {
+        score++;
+        player.grow();
+        food.updatePosition();
+    }
+    updateScreen();
+}
+
+function updateScreen() {
+    const screenState = new ScreenState(player, score, food);
+    clearScreen();
+    drawCurrentScreenState(screenState);
+}
+
+function updateSnakeDirection(keyUpEvent) {
+    // TODO: check if player has crashed (i.e. hit a wall or ran into itself)
+    console.log('keyUpEvent', keyUpEvent);
+    switch (keyUpEvent.key/*.toString().toLowerCase()*/) {
+        case 'w': player.setDirection('up'); break;
+        case 'ArrowUp': player.setDirection('up'); break;
+        case 's': player.setDirection('down'); break;
+        case 'ArrowDown': player.setDirection('down'); break;
+        case 'a': player.setDirection('left'); break;
+        case 'ArrowLeft': player.setDirection('left'); break;
+        case 'd': player.setDirection('right'); break;
+        case 'ArrowRight': player.setDirection('right'); break;
+        default: player.setDirection(null); // keep the direction the same
+    }
 }
 
 function isGameOver() {
-    return player.hasCrashed;
+    return player.hasCrashed();
+}
+
+function wasFoodEaten() {
+    return player.head.x === food.x && player.head.y === food.y
+}
+
+function endTheGame() {
+    clearInterval(clock); // Stop game loop
+    alert('Game Over');
+    releaseResources();
+}
+
+function releaseResources() {
+    player = null;
+    food = null;
+    clock = null;
 }
 
 // function checkIfServiceLoaded() {

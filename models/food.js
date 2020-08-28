@@ -4,18 +4,28 @@
  * The player pursues and collects this to increase
  * the score.
  */
+import * as GameConfig from './game-config.js'
 
  export class Food {
 
-    x;
-    y;
+    x; // horizontal coordinate of this food object
+    y; // vertical coordinate of this food object
     height;
     width;
 
-    constructor(x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+    constructor() {
+        this.updatePosition();
+        this.width = GameConfig.foodSize;
+        this.height = GameConfig.foodSize;
+    }
+
+    /**
+     * Set horizontal and vertical positions to 
+     * any whole number between 1 and 100
+     */
+    updatePosition() {
+        this.x = GameConfig.getOneRandomSpawnCoordinate(); 
+        this.y = GameConfig.getOneRandomSpawnCoordinate();
+        console.log('food coordinates', { x: this.x, y: this.y }); 
     }
  } 
