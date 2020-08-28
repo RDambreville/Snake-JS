@@ -109,10 +109,17 @@ function checkAndUpdateGameState() {
     
     // Move the snake in it's current direction
     switch(player.getCurrentDirectionString().toString().toLowerCase()) {
-        case 'up': player.head.y--; break;
-        case 'down': player.head.y++; break;
-        case 'left': player.head.x--; break;
-        case 'right': player.head.x++; break;
+        // case 'up': player.head.y--; break;
+        // case 'down': player.head.y++; break;
+        // case 'left': player.head.x--; break;
+        // case 'right': player.head.x++; break;
+
+
+        case 'up': player.head.y -= 3; break;
+        case 'down': player.head.y += 3; break;
+        case 'left': player.head.x -= 3; break;
+        case 'right': player.head.x += 3; break;
+
 
         // TOO FAST
         // case 'up': player.head.y -= 5; break;
@@ -163,7 +170,14 @@ function isGameOver() {
 }
 
 function wasFoodEaten() {
-    return player.head.x === food.x && player.head.y === food.y
+    // return player.head.x === food.x && player.head.y === food.y;
+
+    const marginOfSuccess = 2 /*0.5*/;
+    // Hacky estimation
+    // Player just needs to be in ballpark to get a point.
+    //  If the absolute differences between the player's and food's x and y coordinates are within
+    // the marginOfSuccess, then award a point;
+    return Math.abs(player.head.x - food.x) < marginOfSuccess && Math.abs(player.head.y - food.y) < marginOfSuccess;
 }
 
 function endTheGame() {
@@ -174,6 +188,7 @@ function endTheGame() {
 }
 
 function releaseResources() {
+    score = 0;
     player = new Player();
     food = new Food();
     clock = null;
