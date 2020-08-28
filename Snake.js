@@ -168,7 +168,8 @@ function wasFoodEaten() {
 
 function endTheGame() {
     clearInterval(clock); // Stop game loop
-    alert('Game Over');
+    // alert('Game Over');
+    DrawService.drawText('Game Over!', DrawService.getMaxHorzontalPosition() / 2 , DrawService.getMinVerticalPosition() / 2);
     releaseResources();
 }
 
