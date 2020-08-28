@@ -21,11 +21,11 @@ const player = new Player(2, 'up');
  **/ 
 
  // Set clock for game loop, set player, and set screen
- setupGame();
+//  setupGame();
 
 // Add click event listener to play button
 document.querySelector('#checkButton')
-    .addEventListener('click', /*startGameLoop*/ setupGame());
+    .addEventListener('click', /*startGameLoop*/ setupGame); // don't add parentheses to the method call
 
 
 
@@ -42,7 +42,7 @@ function setupGame() {
 }
 
 function setGameClock() {
-    clock = setInterval(updateScreen(), 3000);
+    clock = setInterval(updateScreen, 3); // don't use parentheses with the method call
 }
 
 function updateScreen() {
