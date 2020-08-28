@@ -71,7 +71,7 @@ function drawHeadsUpDisplay(score) {
 }
 
 function drawPlayer(player) {
-    
+    DrawService.drawRectangle(player.head.x, player.head.y, 5, 5);
 }
 
 function drawFood(food) {
@@ -80,7 +80,7 @@ function drawFood(food) {
 
 
 function startGameLoop() {
-    alert('Game loop started!');
+    // alert('Gakme loop started!');
     // Call checkGameState every GameConfig.gameSpeed miliseconds
     clock = setInterval(checkAndUpdateGameState, GameConfig.gameSpeed); // Don't use parentheses with the method call
 }
@@ -96,6 +96,15 @@ function checkAndUpdateGameState() {
         player.grow();
         food.updatePosition();
     }
+    
+    // Move the snake in it's current direction
+    switch(player.getCurrentDirectionString().toString().toLowerCase()) {
+        case 'up': player.head.y--; break;
+        case 'down': player.head.y++; break;
+        case 'left': player.head.x--; break;
+        case 'right': player.head.x++; break;
+        default: break;
+    }
     updateScreen();
 }
 
@@ -109,15 +118,15 @@ function updateSnakeDirection(keyUpEvent) {
     // TODO: check if player has crashed (i.e. hit a wall or ran into itself)
     console.log('keyUpEvent', keyUpEvent);
     switch (keyUpEvent.key/*.toString().toLowerCase()*/) {
-        case 'w': player.setDirection('up'); break;
-        case 'ArrowUp': player.setDirection('up'); break;
-        case 's': player.setDirection('down'); break;
-        case 'ArrowDown': player.setDirection('down'); break;
-        case 'a': player.setDirection('left'); break;
-        case 'ArrowLeft': player.setDirection('left'); break;
-        case 'd': player.setDirection('right'); break;
-        case 'ArrowRight': player.setDirection('right'); break;
-        default: player.setDirection(null); // keep the direction the same
+        case 'w': player.setDirectionString('up'); break;
+        case 'ArrowUp': player.setDirectionString('up'); break;
+        case 's': player.setDirectionString('down'); break;
+        case 'ArrowDown': player.setDirectionString('down'); break;
+        case 'a': player.setDirectionString('left'); break;
+        case 'ArrowLeft': player.setDirectionString('left'); break;
+        case 'd': player.setDirectionString('right'); break;
+        case 'ArrowRight': player.setDirectionString('right'); break;
+        default: player.setDirectionString(null); // keep the direction the same
     }
 }
 

@@ -35,13 +35,17 @@ export class Player {
         return randomDirectionString ? randomDirectionString : this.directionChoices[0];
     }
 
-    setDirection(directionString) {
+    setDirectionString(directionString) {
         if (directionString) {
             const matchingDirectionFromLookup = this.directionChoices.filter(choice => 
                 choice.toString().toLowerCase() === directionString.toString().toLowerCase())[0];
             this. direction = matchingDirectionFromLookup ? matchingDirectionFromLookup : this.direction;
         }
         console.log('new snake direction', this.direction);
+    }
+
+    getCurrentDirectionString() {
+        return this.direction;
     }
 
     getRandomHeadCoordinates() {
