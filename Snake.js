@@ -114,11 +114,16 @@ function checkAndUpdateGameState() {
         // case 'left': player.head.x--; break;
         // case 'right': player.head.x++; break;
 
+        case 'up': player.head.y -= GameConfig.gameSpeed; break;
+        case 'down': player.head.y += GameConfig.gameSpeed; break;
+        case 'left': player.head.x -= GameConfig.gameSpeed; break;
+        case 'right': player.head.x += GameConfig.gameSpeed; break;
 
-        case 'up': player.head.y -= 3; break;
-        case 'down': player.head.y += 3; break;
-        case 'left': player.head.x -= 3; break;
-        case 'right': player.head.x += 3; break;
+
+        // case 'up': player.head.y -= 3; break;
+        // case 'down': player.head.y += 3; break;
+        // case 'left': player.head.x -= 3; break;
+        // case 'right': player.head.x += 3; break;
 
 
         // TOO FAST

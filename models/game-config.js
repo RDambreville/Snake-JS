@@ -4,7 +4,7 @@
  * 
  */
 
- export let gameSpeed = 10; // Time (in miliseconds) to update the screen. Low value => high game speed, High value => low game speed
+ export let gameSpeed = 0.5; // Time (in miliseconds) to update the screen. Low value => high game speed, High value => low game speed
 
  export let foodSize = 5; // Width and height of food square
 
@@ -16,3 +16,9 @@
  }
 
  export let lengthToAddToPlayer = 2; // Amount by which to increase snake length after eating food
+
+ export let isDarkMode = true;
+
+ export let canvasHeight = '75%';
+
+ export let canvasWidth = '75%';
