@@ -111,7 +111,7 @@ function connectVertices(currentVertex, nextVertex) {
         // Draw a vertical line if vertices are on seperate lines
         if (currentVertex.x === nextVertex.x && currentVertex.y !== nextVertex.y) {
             // if current vertex is lower than the previous vertex, then draw upwards
-            if (currentVertex.y >= nextVertex.y) {
+            if (currentVertex.y > nextVertex.y) {
                 DrawService.drawRectangle(nextVertex.x, nextVertex.y, GameConfig.foodSize, Math.abs(nextVertex.y - currentVertex.y))
             } else { // draw downwards
                 DrawService.drawRectangle(currentVertex.x, currentVertex.y, GameConfig.foodSize, Math.abs(nextVertex.y - currentVertex.y))
@@ -119,16 +119,13 @@ function connectVertices(currentVertex, nextVertex) {
             // DrawService.drawRectangle(currentVertex.x, currentVertex.y, GameConfig.foodSize, Math.abs(nextVertex.y - currentVertex.y))
         } 
         // Draw a horizontal line if vertices are on the same line 
-        /*else*/ if (currentVertex.x !== nextVertex.x && currentVertex.y === nextVertex.y) {
-            // if current vertex is to the left of next vertex, then draw backwards
-            if (currentVertex.x >= nextVertex.y) {
-                DrawService.drawRectangle(nextVertex.x, nextVertex.y, GameConfig.foodSize, Math.abs(nextVertex.y - currentVertex.y))
+        if (currentVertex.x !== nextVertex.x && currentVertex.y === nextVertex.y) {
+            // if current vertex is to the right of next vertex, then draw backwards
+            if (currentVertex.x > nextVertex.x) {
+                DrawService.drawRectangle(nextVertex.x, nextVertex.y, Math.abs(nextVertex.x - currentVertex.x), GameConfig.foodSize)
             } else { // Draw frontwards
-                DrawService.drawRectangle(currentVertex.x, currentVertex.y, GameConfig.foodSize, Math.abs(nextVertex.y - currentVertex.y))
+                DrawService.drawRectangle(currentVertex.x, currentVertex.y, Math.abs(nextVertex.x - currentVertex.x), GameConfig.foodSize)
             }
-            // This line makes things work well for some reason
-            //TODO: Figure out why
-            DrawService.drawRectangle(nextVertex.x, nextVertex.y,  Math.abs(nextVertex.x - currentVertex.x), GameConfig.foodSize);
         }
     }
 }
