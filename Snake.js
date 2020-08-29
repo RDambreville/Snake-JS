@@ -3,6 +3,7 @@ import * as GameConfig from './models/game-config.js'
 import { Player } from './models/player.js';
 import { Food } from './models/food.js';
 import { ScreenState } from './models/screen-state.js';
+import { BodyVertex } from './models/body-vertex.js';
 
 /**=============================================================== 
  * ====================== Variables ============================== 
@@ -27,6 +28,12 @@ let food = new Food()
 // Add click event listener to play button
 document.querySelector('#start-button')
     .addEventListener('click', startGameLoop); // Don't add parentheses to the method call
+
+document.querySelector('#dark-mode-checkbox')
+    .addEventListener('click', toggleDarkMode)
+
+// document.querySelector('#dark-mode-checkbox')
+//     .addEventListener('load', setDarkModeCheckBoxDefault)
 
 // document.querySelector('#play-surface')
 //     .addEventListener('keypress', updateSnakeDirection).bind(); // Don't add parentheses to the method call
@@ -74,7 +81,7 @@ function drawHeadsUpDisplay(/*score*/) {
 function drawFood(/*food*/) {
     DrawService.setFillColor(GameConfig.foodColor); // change paint color
     DrawService.drawRectangle(food.x, food.y, food.width, food.height) // draw the food
-    DrawService.setFillColor(GameConfig.isDarkMode ? 'white' : 'green'); // change paint color back
+    DrawService.setFillColor(GameConfig.getIsDarkMode() ? 'white' : 'green'); // change paint color back
 }
 
 function drawPlayer(/*player*/) {
@@ -82,8 +89,6 @@ function drawPlayer(/*player*/) {
     DrawService.drawRectangle(player.head.x, player.head.y, GameConfig.foodSize, GameConfig.foodSize);
     // Draw the line connecting the head to the previous vertex
     connectVertices(player.head, player.bodyVertices[player.bodyVertices.length - 1])
-
-    // DrawService.drawRectangle(player.head.x, player.head.y, GameConfig.foodSize, GameConfig.foodSize)
     
     // Draw the snake's body starting at the head
     // Draw 2 body vertices at a time and connect with line
@@ -97,10 +102,10 @@ function drawPlayer(/*player*/) {
    // remove some of the snake's tail
    if (player.bodyVertices.length > 10) {
     player.bodyVertices.shift();
-
    }
-    
-    
+//    if (isTotalGroundCoveredGreaterThanBodyLength()) {
+//         player.bodyVertices.shift(); // remove snake tracks as new ground is covered
+//    }
 }
 
 function connectVertices(currentVertex, nextVertex) {
@@ -130,15 +135,56 @@ function connectVertices(currentVertex, nextVertex) {
     }
 }
 
+function isTotalGroundCoveredGreaterThanBodyLength() {
+    let totalGroundCovered = 0;
+    let occupiedPoints = getAllOccupiedPoints();
+    occupiedPoints.forEach((point, index) => {
+        if (index + 1 < occupiedPoints.length) { // if the next point is in bounds
+            // Add the distances between consecutive points to the running total
+            switch (point.direction.toString().toLowerCase()) {
+                case 'up': totalGroundCovered += Math.abs(point.y - occupiedPoints[index + 1].y);
+                case 'down': totalGroundCovered += Math.abs(point.y - occupiedPoints[index + 1].y);
+                case 'left': totalGroundCovered += Math.abs(point.x - occupiedPoints[index + 1].y);
+                case 'right': totalGroundCovered += Math.abs(point.x - occupiedPoints[index + 1].x);
+            }
+        }
+    })
+    return totalGroundCovered > player.length;
+}
+
 function startGameLoop() {
     // alert('Gakme loop started!');
+    disableStartButton(); // prevent extra clicks after initial start
     // Call checkGameState every GameConfig.gameSpeed miliseconds
     clock = setInterval(checkAndUpdateGameState, GameConfig.gameSpeed); // Don't use parentheses with the method call
 }
 
+function disableStartButton() {
+    const startButton = document.getElementById('start-button');
+    startButton.setAttribute('disabled', 'true');
+}
+
+function enableStartButton() {
+    const startButton = document.getElementById('start-button');
+    startButton.removeAttribute('disabled');
+}
+
+// function setDarkModeCheckBoxDefault() {
+//     document.getElementById('dark-mod-checkbox').checked = GameConfig.getIsDarkMode();
+// }
+
+function toggleDarkMode(clickEvent) {
+    if (clickEvent.target.checked) {
+        GameConfig.setIsDarkMode(true);
+    } else {
+        GameConfig.setIsDarkMode(false);
+    }
+    initPlayScreen();
+}
+
 function checkAndUpdateGameState() {
     // TODO: Uncomment boundary detection
-    if (/*isPlayerOutOfBounds() ||*/ hasPlayerHitSelf()) {
+    if (/*isPlayerOutOfBounds() ||*/ hasPlayerCrashedIntoSelf()) {
         player.crash();
     }
 
@@ -194,8 +240,78 @@ function isPlayerOutOfBounds() {
         player.head.y <= DrawService.getMaxVerticalPosition();
 }
 
-function hasPlayerHitSelf() {
-    return false;
+function hasPlayerCrashedIntoSelf() {
+    // return false;
+    const occupiedPoints = getAllOccupiedPoints(); // array of points already occupied by the snake
+
+    // Return true if the snake's head has hit any of the vertices of its body OR
+    // if the snake head coincides with an snake-occupied point between any pair of body vertices
+
+    // return player.bodyVertices.some(vertex => vertex.x === player.head.x && vertex.y === player.head.y) ||
+    //     occupiedPoints.some(point => point.x === player.head.x && point.y === player.head.y);
+
+    return occupiedPoints.length > 0 ? occupiedPoints.some(point => point.x === player.head.x && point.y === player.head.y) : false;
+}
+
+function getAllOccupiedPoints() {
+    let occupiedPoints = [];
+    let nextVertex;
+    let allPointsInBetween = [];
+    player.bodyVertices.forEach((currentVertex, index) => {
+        if (!currentVertex.oldDirectionString) { // if the currentVertext is the head at start of game
+            // Add a dummy pseduo-vertex a few pixels away from the start in order to start genearating points between
+            nextVertex = new BodyVertex(
+                player.head.x + GameConfig.gameSpeed, player.head.y + GameConfig.gameSpeed, currentVertex.newDirectionString.toString().toLowerCase(), player.getCurrentDirectionString());
+            player.bodyVertices.push(nextVertex);
+            allPointsInBetween = getAllPointsBetweenTwoVertices(currentVertex, nextVertex);
+            
+        } else if (index + 1 < player.bodyVertices.length) { // if next vertex is still in bounds
+            nextVertex = player.bodyVertices[index + 1];
+            allPointsInBetween = getAllPointsBetweenTwoVertices(currentVertex, nextVertex);
+        }
+        occupiedPoints.push(...allPointsInBetween);
+    });
+    return occupiedPoints;
+}
+
+function getAllPointsBetweenTwoVertices(currentVertex, nextVertex) {
+    let allPoints = [];
+    if (currentVertex && currentVertex.newDirectionString) {
+        switch (currentVertex.newDirectionString.toString().toLowerCase()) {
+            // The origin of the canvas is (0, 0), so the higher the player climbs up the canvas, 
+            // the smaller its y coordinate becomes and vice versa
+            case 'up': { // loop upward over y coordinates
+                    for (let y = currentVertex.y; y > nextVertex.y; y -= GameConfig.gameSpeed ) {
+                        const point = { x: currentVertex.x, y: y, direction: currentVertex.newDirectionString.toString().toLowerCase() };
+                        allPoints.push(point);
+                    }
+                break;
+            }
+            case 'down': { // loop downard over y coordinates
+                for (let y = currentVertex.y; y < nextVertex.y; y += GameConfig.gameSpeed ) {
+                    const point = { x: currentVertex.x, y: y, direction: currentVertex.newDirectionString.toString().toLowerCase() };
+                    allPoints.push(point);
+                }
+                break;
+            }
+            case 'left': { // loop backward over x coordinates
+                for (let x = currentVertex.x; x > nextVertex.x; x -= GameConfig.gameSpeed ) {
+                    const point = { x: x, y: currentVertex.y, direction: currentVertex.newDirectionString.toString().toLowerCase() };
+                    allPoints.push(point);
+                }
+                break;
+            }
+            case 'right': { // loop forward over x coordinates
+                for (let x = currentVertex.x; x < nextVertex.x; x += GameConfig.gameSpeed ) {
+                    const point = { x: x, y: currentVertex.y, direction: currentVertex.newDirectionString.toString().toLowerCase() };
+                    allPoints.push(point);
+                }
+                break;
+            }
+        }
+
+    }
+    return allPoints;
 }
 
 function isGameOver() {
@@ -208,6 +324,7 @@ function endTheGame() {
     const yTextCoordinate = DrawService.getMinVerticalPosition() / 2
     DrawService.drawText('Game Over!', xTextCoordinate, yTextCoordinate);
     releaseResources();
+    enableStartButton();
 }
 
 function releaseResources() {

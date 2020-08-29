@@ -32,7 +32,15 @@
  * ============================= UI ============================= 
  * ============================================================== 
  **/ 
- export let isDarkMode = true;
+let isDarkMode = true;
+
+ export function getIsDarkMode() {
+     return isDarkMode;
+ }
+
+ export function setIsDarkMode(_isDarkMode) {
+     isDarkMode = _isDarkMode
+ }
 
  export let canvasHeight = '75%';
 

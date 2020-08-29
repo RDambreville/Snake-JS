@@ -24,10 +24,10 @@ export class Player {
     constructor() {
         this.length = GameConfig.initialPlayerLength;   
         this.direction = this.getRandomDirectionString();
-        this.head = this.getRandomHeadCoordinates()
+        this.head = this.getRandomHeadCoordinates();
         this.bodyVertices = [];
-        console.log('start direction', this.direction);
-        console.log('start snake head', this.head);
+        // this.bodyVertices = [new BodyVertex(this.head.x, this.head.y, null, this.direction)];
+        console.log('player at start', this);
     }
 
     getRandomDirectionString() {
@@ -40,7 +40,7 @@ export class Player {
 
     setDirectionString(directionString) {
         // Only allow direction changes when moving in a new direction and not when backpedaling
-        if (directionString && !this.isSameDirection(directionString) && !this.isOppositeDirection(directionString)) {
+        if (directionString && !this.isMovingInSameDirection(directionString) && !this.isMovingInOppositeDirection(directionString)) {
             const newVertex = new BodyVertex(
                 this.head.x, this.head.y, this.direction.toString().toLowerCase(), directionString.toString().toLowerCase());
             this.bodyVertices.push(newVertex);
@@ -54,7 +54,7 @@ export class Player {
     }
 
     getCurrentDirectionString() {
-        return this.direction;
+        return this.direction ? this.direction.toString().toLowerCase() : '';
     }
 
     getRandomHeadCoordinates() {
@@ -73,11 +73,11 @@ export class Player {
         return this.hasPlayerCrashed;
     }
 
-    isSameDirection(newDirectionString) {
+    isMovingInSameDirection(newDirectionString) {
         return newDirectionString.toString().toLowerCase() === this.direction.toString().toLowerCase()
     }
 
-    isOppositeDirection(newDirectionString) {
+    isMovingInOppositeDirection(newDirectionString) {
         switch (newDirectionString.toString().toLowerCase()) {
             case 'up': return this.direction.toString().toLowerCase() === 'down';
             case 'down': return this.direction.toString().toLowerCase() === 'up';
