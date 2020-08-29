@@ -74,7 +74,7 @@ function drawHeadsUpDisplay(/*score*/) {
 function drawPlayer(/*player*/) {
     // Draw the snake's head
     DrawService.drawRectangle(player.head.x, player.head.y, 5, 5);
-
+    
     // Draw the snake's body
     
     
