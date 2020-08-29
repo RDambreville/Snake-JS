@@ -63,27 +63,75 @@ function clearScreen() {
 
 function drawCurrentScreenState(/*screenState*/) {
     drawHeadsUpDisplay(/*screenState.score*/);
-    drawPlayer(/*screenState.player*/);
     drawFood(/*screenState.food*/);
+    drawPlayer(/*screenState.player*/);
 }
 
 function drawHeadsUpDisplay(/*score*/) {
     DrawService.drawText(`Score: ${score}`, 0, 20);
 }
 
+function drawFood(/*food*/) {
+    DrawService.setFillColor(GameConfig.foodColor); // change paint color
+    DrawService.drawRectangle(food.x, food.y, food.width, food.height) // draw the food
+    DrawService.setFillColor(GameConfig.isDarkMode ? 'white' : 'green'); // change paint color back
+}
+
 function drawPlayer(/*player*/) {
     // Draw the snake's head
-    DrawService.drawRectangle(player.head.x, player.head.y, 5, 5);
+    DrawService.drawRectangle(player.head.x, player.head.y, GameConfig.foodSize, GameConfig.foodSize);
+    // Draw the line connecting the head to the previous vertex
+    connectVertices(player.head, player.bodyVertices[player.bodyVertices.length - 1])
 
-    // Draw the snake's body
+    // DrawService.drawRectangle(player.head.x, player.head.y, GameConfig.foodSize, GameConfig.foodSize)
+    
+    // Draw the snake's body starting at the head
+    // Draw 2 body vertices at a time and connect with line
+   const lengthOfVertexList = player.bodyVertices.length >= 0 ? player.bodyVertices.length : 0;
+   for (let currentIndex = lengthOfVertexList - 1; currentIndex >= 0; currentIndex--) {
+        const currentVertex = player.bodyVertices[currentIndex];
+        const nextVertex = player.bodyVertices[currentIndex - 1];
+        connectVertices(currentVertex, nextVertex);
+   }
+
+   // remove some of the snake's tail
+   if (player.bodyVertices.length > 10) {
+    player.bodyVertices.shift();
+
+   }
     
     
 }
 
-function drawFood(/*food*/) {
-    DrawService.drawRectangle(food.x, food.y, food.width, food.height)
+function connectVertices(currentVertex, nextVertex) {
+    // Draw 2 body vertices at a time and connect with line
+    if (currentVertex && nextVertex) {
+        DrawService.drawRectangle(currentVertex.x, currentVertex.y, GameConfig.foodSize, GameConfig.foodSize);   // Draw first vertex
+        DrawService.drawRectangle(nextVertex.x, nextVertex.y, GameConfig.foodSize, GameConfig.foodSize);   // Draw second vertex
+        // Draw a vertical line if vertices are on seperate lines
+        if (currentVertex.x === nextVertex.x && currentVertex.y !== nextVertex.y) {
+            // if current vertex is lower than the previous vertex, then draw upwards
+            if (currentVertex.y >= nextVertex.y) {
+                DrawService.drawRectangle(nextVertex.x, nextVertex.y, GameConfig.foodSize, Math.abs(nextVertex.y - currentVertex.y))
+            } else { // draw downwards
+                DrawService.drawRectangle(currentVertex.x, currentVertex.y, GameConfig.foodSize, Math.abs(nextVertex.y - currentVertex.y))
+            }
+            // DrawService.drawRectangle(currentVertex.x, currentVertex.y, GameConfig.foodSize, Math.abs(nextVertex.y - currentVertex.y))
+        } 
+        // Draw a horizontal line if vertices are on the same line 
+        /*else*/ if (currentVertex.x !== nextVertex.x && currentVertex.y === nextVertex.y) {
+            // if current vertex is to the left of next vertex, then draw backwards
+            if (currentVertex.x >= nextVertex.y) {
+                DrawService.drawRectangle(nextVertex.x, nextVertex.y, GameConfig.foodSize, Math.abs(nextVertex.y - currentVertex.y))
+            } else { // Draw frontwards
+                DrawService.drawRectangle(currentVertex.x, currentVertex.y, GameConfig.foodSize, Math.abs(nextVertex.y - currentVertex.y))
+            }
+            // This line makes things work well for some reason
+            //TODO: Figure out why
+            DrawService.drawRectangle(nextVertex.x, nextVertex.y,  Math.abs(nextVertex.x - currentVertex.x), GameConfig.foodSize);
+        }
+    }
 }
-
 
 function startGameLoop() {
     // alert('Gakme loop started!');
@@ -92,7 +140,8 @@ function startGameLoop() {
 }
 
 function checkAndUpdateGameState() {
-    if (isPlayerOutOfBounds() || hasPlayerHitSelf()) {
+    // TODO: Uncomment boundary detection
+    if (/*isPlayerOutOfBounds() ||*/ hasPlayerHitSelf()) {
         player.crash();
     }
 

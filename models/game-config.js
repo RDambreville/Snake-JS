@@ -13,6 +13,8 @@
 
  export let foodSize = 5; // Width and height of food square
 
+ export let foodColor = 'red'; // Color of food
+
  export let initialPlayerLength = 2; // Starting length of snake
 
  export function  getOneRandomSpawnCoordinate() {

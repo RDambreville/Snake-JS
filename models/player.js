@@ -3,14 +3,14 @@
  * An object representing the player
  */
 import * as GameConfig from './game-config.js';
-import { BodyKink } from './body-kink.js';
+import { BodyVertex } from './body-vertex.js';
 
 export class Player {
 
     length;
     head;
     direction;
-    bodyKinks = []; // Array of vertices at which the snake changed direction
+    bodyVertices = []; // Array of vertices at which the snake changed direction
 
     directionChoices = [
         'UP',
@@ -25,7 +25,7 @@ export class Player {
         this.length = GameConfig.initialPlayerLength;   
         this.direction = this.getRandomDirectionString();
         this.head = this.getRandomHeadCoordinates()
-        this.bodyKinks = [];
+        this.bodyVertices = [];
         console.log('start direction', this.direction);
         console.log('start snake head', this.head);
     }
@@ -41,14 +41,14 @@ export class Player {
     setDirectionString(directionString) {
         // Only allow direction changes when moving in a new direction and not when backpedaling
         if (directionString && !this.isSameDirection(directionString) && !this.isOppositeDirection(directionString)) {
-            const newKink = new BodyKink(
+            const newVertex = new BodyVertex(
                 this.head.x, this.head.y, this.direction.toString().toLowerCase(), directionString.toString().toLowerCase());
-            this.bodyKinks.push(newKink);
+            this.bodyVertices.push(newVertex);
             const matchingDirectionFromLookup = this.directionChoices.filter(choice => 
                 choice.toString().toLowerCase() === directionString.toString().toLowerCase())[0];
             this. direction = matchingDirectionFromLookup ? matchingDirectionFromLookup : this.direction;
             console.log('new snake direction', this.direction);
-            console.log('body kinks', this.bodyKinks);
+            console.log('body vertices', this.bodyVertices);
         }
        
     }

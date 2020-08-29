@@ -1,10 +1,10 @@
 /**
- * body-kink.js
+ * body-vertex.js
  * An object representing a turning point for the snake.
  */
 import * as GameConfig from './game-config.js'
 
- export class BodyKink {
+ export class BodyVertex {
 
     x; // horizontal coordinate of this bodyKink object
     y; // vertical coordinate of this bodyKink object
