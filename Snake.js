@@ -74,7 +74,7 @@ function drawHeadsUpDisplay(/*score*/) {
 function drawPlayer(/*player*/) {
     // Draw the snake's head
     DrawService.drawRectangle(player.head.x, player.head.y, 5, 5);
-    
+
     // Draw the snake's body
     
     
@@ -178,7 +178,7 @@ function wasFoodEaten() {
     // Player just needs to be in ballpark to get a point.
     // If the distance between the player and food is within
     // the marginOfSuccess, then award a point;
-    const marginOfSuccess = GameConfig.marginOfSuccess; // pixels
+    const marginOfSuccess = GameConfig.marginOfSuccess;
     return Math.abs(player.head.x - food.x) < marginOfSuccess && Math.abs(player.head.y - food.y) < marginOfSuccess;
 }
 
@@ -191,7 +191,7 @@ function updateScreen() {
 function updateSnakeDirection(keyUpEvent) {
     // TODO: check if player has crashed (i.e. hit a wall or ran into itself)
     console.log('keyUpEvent', keyUpEvent);
-    switch (keyUpEvent.key/*.toString().toLowerCase()*/) {
+    switch (keyUpEvent.key) {
         case 'w': player.setDirectionString('up'); break;
         case 'ArrowUp': player.setDirectionString('up'); break;
         case 's': player.setDirectionString('down'); break;

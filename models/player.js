@@ -40,16 +40,17 @@ export class Player {
 
     setDirectionString(directionString) {
         // Only allow direction changes when moving in a new direction and not when backpedaling
-        if (!this.isSameDirection(directionString) && !this.isOppositeDirection(directionString)) {
+        if (directionString && !this.isSameDirection(directionString) && !this.isOppositeDirection(directionString)) {
             const newKink = new BodyKink(
                 this.head.x, this.head.y, this.direction.toString().toLowerCase(), directionString.toString().toLowerCase());
             this.bodyKinks.push(newKink);
             const matchingDirectionFromLookup = this.directionChoices.filter(choice => 
                 choice.toString().toLowerCase() === directionString.toString().toLowerCase())[0];
             this. direction = matchingDirectionFromLookup ? matchingDirectionFromLookup : this.direction;
+            console.log('new snake direction', this.direction);
+            console.log('body kinks', this.bodyKinks);
         }
-        console.log('new snake direction', this.direction);
-        console.log('body kinks', this.bodyKinks);
+       
     }
 
     getCurrentDirectionString() {
