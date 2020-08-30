@@ -309,7 +309,6 @@ function getAllPointsBetweenTwoVertices(currentVertex, nextVertex) {
                 break;
             }
         }
-
     }
     return allPoints;
 }
@@ -321,7 +320,8 @@ function isGameOver() {
 function endTheGame() {
     clearInterval(clock); // Stop game loop
     const xTextCoordinate = DrawService.getMaxHorzontalPosition() / 2;
-    const yTextCoordinate = DrawService.getMinVerticalPosition() / 2
+    const yTextCoordinate = DrawService.getMinVerticalPosition() / 2;
+    DrawService.setFillColor('red');
     DrawService.drawText('Game Over!', xTextCoordinate, yTextCoordinate);
     releaseResources();
     enableStartButton();
@@ -352,7 +352,6 @@ function updateScreen() {
 }
 
 function updateSnakeDirection(keyUpEvent) {
-    // TODO: check if player has crashed (i.e. hit a wall or ran into itself)
     console.log('keyUpEvent', keyUpEvent);
     switch (keyUpEvent.key) {
         case 'w': player.setDirectionString('up'); break;
