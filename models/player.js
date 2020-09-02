@@ -2,7 +2,7 @@
  * player.js
  * An object representing the player
  */
-import * as GameConfig from './game-config.js';
+import * as GameConfig from '../config/game-config.js';
 import { BodyVertex } from './body-vertex.js';
 
 export class Player {
@@ -33,7 +33,7 @@ export class Player {
     getRandomDirectionString() {
         // set randomIndex to any whole number between 0 and 3
         //  since the directionChoices array is only 4 elements long
-        const randomIndex = Math.random() * (3 - 0); 
+        const randomIndex = Math.ceil(Math.random() * (3 - 0)); 
         const randomDirectionString = this.directionChoices[randomIndex];
         return randomDirectionString ? randomDirectionString : this.directionChoices[0];
     }
@@ -50,7 +50,6 @@ export class Player {
             console.log('new snake direction', this.direction);
             console.log('body vertices', this.bodyVertices);
         }
-       
     }
 
     getCurrentDirectionString() {
@@ -74,7 +73,7 @@ export class Player {
     }
 
     isMovingInSameDirection(newDirectionString) {
-        return newDirectionString.toString().toLowerCase() === this.direction.toString().toLowerCase()
+        return newDirectionString.toString().toLowerCase() === this.direction.toString().toLowerCase();
     }
 
     isMovingInOppositeDirection(newDirectionString) {

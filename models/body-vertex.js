@@ -2,7 +2,7 @@
  * body-vertex.js
  * An object representing a turning point for the snake.
  */
-import * as GameConfig from './game-config.js'
+import * as GameConfig from '../config/game-config.js'
 
  export class BodyVertex {
 

@@ -1,5 +1,5 @@
 import * as DrawService from '../draw.js'; 
-import * as GameConfig from './models/game-config.js'
+import * as GameConfig from './config/game-config.js'
 import { Player } from './models/player.js';
 import { Food } from './models/food.js';
 import { ScreenState } from './models/screen-state.js';

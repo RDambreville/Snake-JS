@@ -4,7 +4,7 @@
  * The player pursues and collects this to increase
  * the score.
  */
-import * as GameConfig from './game-config.js'
+import * as GameConfig from '../config/game-config.js'
 
  export class Food {
 
