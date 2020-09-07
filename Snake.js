@@ -1,14 +1,14 @@
-import * as DrawService from '../draw.js'; 
+import * as DrawService from '../draw.js';
 import * as GameConfig from './config/game-config.js'
 import { Player } from './models/player.js';
 import { Food } from './models/food.js';
 import { ScreenState } from './models/screen-state.js';
 import { BodyVertex } from './models/body-vertex.js';
 
-/**=============================================================== 
- * ====================== Variables ============================== 
- * =============================================================== 
- **/ 
+/**===============================================================
+ * ====================== Variables ==============================
+ * ===============================================================
+ **/
 
 let score;
 let clock;
@@ -17,13 +17,13 @@ let food = new Food()
 
 
 
-/**=============================================================== 
- * ====================== Method Calls =========================== 
- * =============================================================== 
- **/ 
+/**===============================================================
+ * ====================== Method Calls ===========================
+ * ===============================================================
+ **/
 
 
- setupGame();   // Set initial game screen
+setupGame();   // Set initial game screen
 
 // Add click event listener to play button
 document.querySelector('#start-button')
@@ -44,10 +44,10 @@ document.querySelector('body')
 
 
 
-/**=============================================================== 
- * ====================== Method definitions ===================== 
- * =============================================================== 
- **/ 
+/**===============================================================
+ * ====================== Method definitions =====================
+ * ===============================================================
+ **/
 
 function setupGame() {
     score = 0;
@@ -57,7 +57,7 @@ function setupGame() {
 
 
 function initPlayScreen() {
-    DrawService.setupCanvas();
+    DrawService.setupCanvas(GameConfig.canvasHeight, GameConfig.canvasWidth, GameConfig.getIsDarkMode());
     // const screenState = new ScreenState(player, score, food)
     // console.log('screenState', screenState);
     clearScreen();
@@ -89,23 +89,24 @@ function drawPlayer(/*player*/) {
     DrawService.drawRectangle(player.head.x, player.head.y, GameConfig.foodSize, GameConfig.foodSize);
     // Draw the line connecting the head to the previous vertex
     connectVertices(player.head, player.bodyVertices[player.bodyVertices.length - 1])
-    
+
     // Draw the snake's body starting at the head
+    // and moving backwards towards the tail
     // Draw 2 body vertices at a time and connect with line
-   const lengthOfVertexList = player.bodyVertices.length >= 0 ? player.bodyVertices.length : 0;
-   for (let currentIndex = lengthOfVertexList - 1; currentIndex >= 0; currentIndex--) {
+    const lengthOfVertexList = player.bodyVertices.length >= 0 ? player.bodyVertices.length : 0;
+    for (let currentIndex = lengthOfVertexList - 1; currentIndex >= 0; currentIndex--) {
         const currentVertex = player.bodyVertices[currentIndex];
         const nextVertex = player.bodyVertices[currentIndex - 1];
         connectVertices(currentVertex, nextVertex);
-   }
+    }
 
-   // remove some of the snake's tail
-   if (player.bodyVertices.length > 10) {
-    player.bodyVertices.shift();
-   }
-//    if (isTotalGroundCoveredGreaterThanBodyLength()) {
-//         player.bodyVertices.shift(); // remove snake tracks as new ground is covered
-//    }
+    // remove some of the snake's tail
+    if (player.bodyVertices.length > 10) {
+        player.bodyVertices.shift();
+    }
+    //    if (isTotalGroundCoveredGreaterThanBodyLength()) {
+    //         player.bodyVertices.shift(); // remove snake tracks as new ground is covered
+    //    }
 }
 
 function connectVertices(currentVertex, nextVertex) {
@@ -122,7 +123,7 @@ function connectVertices(currentVertex, nextVertex) {
                 DrawService.drawRectangle(currentVertex.x, currentVertex.y, GameConfig.foodSize, Math.abs(nextVertex.y - currentVertex.y))
             }
             // DrawService.drawRectangle(currentVertex.x, currentVertex.y, GameConfig.foodSize, Math.abs(nextVertex.y - currentVertex.y))
-        } 
+        }
         // Draw a horizontal line if vertices are on the same line 
         if (currentVertex.x !== nextVertex.x && currentVertex.y === nextVertex.y) {
             // if current vertex is to the right of next vertex, then draw backwards
@@ -183,15 +184,15 @@ function toggleDarkMode(clickEvent) {
 }
 
 function checkAndUpdateGameState() {
-    // TODO: Uncomment boundary detection
-    if (/*isPlayerOutOfBounds() ||*/ hasPlayerCrashedIntoSelf()) {
+    // _TODO: Uncomment boundary detection
+    if (isPlayerOutOfBounds() || hasPlayerCrashedIntoSelf()) {
         player.crash();
     }
 
     if (isGameOver()) {
         console.log('player head', player.head);
-        console.log('min horizontal', DrawService.getMinHorzontalPosition());
-        console.log('max horizontal', DrawService.getMaxHorzontalPosition());
+        console.log('min horizontal', DrawService.getMinHorizontalPosition());
+        console.log('max horizontal', DrawService.getMaxHorizontalPosition());
         console.log('max vertical', DrawService.getMaxVerticalPosition());
         console.log('min vertical', DrawService.getMinVerticalPosition());
         endTheGame();
@@ -203,9 +204,9 @@ function checkAndUpdateGameState() {
         player.grow();
         food.updatePosition();
     }
-    
+
     // Move the snake in it's current direction
-    switch(player.getCurrentDirectionString().toString().toLowerCase()) {
+    switch (player.getCurrentDirectionString().toString().toLowerCase()) {
         // case 'up': player.head.y--; break;
         // case 'down': player.head.y++; break;
         // case 'left': player.head.x--; break;
@@ -234,8 +235,8 @@ function checkAndUpdateGameState() {
 }
 
 function isPlayerOutOfBounds() {
-    return player.head.x >= DrawService.getMaxHorzontalPosition() ||
-        player.head.x <= DrawService.getMinHorzontalPosition() ||
+    return player.head.x >= DrawService.getMaxHorizontalPosition() ||
+        player.head.x <= DrawService.getMinHorizontalPosition() ||
         player.head.y >= DrawService.getMinVerticalPosition() ||
         player.head.y <= DrawService.getMaxVerticalPosition();
 }
@@ -264,7 +265,7 @@ function getAllOccupiedPoints() {
                 player.head.x + GameConfig.gameSpeed, player.head.y + GameConfig.gameSpeed, currentVertex.newDirectionString.toString().toLowerCase(), player.getCurrentDirectionString());
             player.bodyVertices.push(nextVertex);
             allPointsInBetween = getAllPointsBetweenTwoVertices(currentVertex, nextVertex);
-            
+
         } else if (index + 1 < player.bodyVertices.length) { // if next vertex is still in bounds
             nextVertex = player.bodyVertices[index + 1];
             allPointsInBetween = getAllPointsBetweenTwoVertices(currentVertex, nextVertex);
@@ -281,28 +282,28 @@ function getAllPointsBetweenTwoVertices(currentVertex, nextVertex) {
             // The origin of the canvas is (0, 0), so the higher the player climbs up the canvas, 
             // the smaller its y coordinate becomes and vice versa
             case 'up': { // loop upward over y coordinates
-                    for (let y = currentVertex.y; y > nextVertex.y; y -= GameConfig.gameSpeed ) {
-                        const point = { x: currentVertex.x, y: y, direction: currentVertex.newDirectionString.toString().toLowerCase() };
-                        allPoints.push(point);
-                    }
+                for (let y = currentVertex.y; y > nextVertex.y; y -= GameConfig.gameSpeed) {
+                    const point = { x: currentVertex.x, y: y, direction: currentVertex.newDirectionString.toString().toLowerCase() };
+                    allPoints.push(point);
+                }
                 break;
             }
             case 'down': { // loop downard over y coordinates
-                for (let y = currentVertex.y; y < nextVertex.y; y += GameConfig.gameSpeed ) {
+                for (let y = currentVertex.y; y < nextVertex.y; y += GameConfig.gameSpeed) {
                     const point = { x: currentVertex.x, y: y, direction: currentVertex.newDirectionString.toString().toLowerCase() };
                     allPoints.push(point);
                 }
                 break;
             }
             case 'left': { // loop backward over x coordinates
-                for (let x = currentVertex.x; x > nextVertex.x; x -= GameConfig.gameSpeed ) {
+                for (let x = currentVertex.x; x > nextVertex.x; x -= GameConfig.gameSpeed) {
                     const point = { x: x, y: currentVertex.y, direction: currentVertex.newDirectionString.toString().toLowerCase() };
                     allPoints.push(point);
                 }
                 break;
             }
             case 'right': { // loop forward over x coordinates
-                for (let x = currentVertex.x; x < nextVertex.x; x += GameConfig.gameSpeed ) {
+                for (let x = currentVertex.x; x < nextVertex.x; x += GameConfig.gameSpeed) {
                     const point = { x: x, y: currentVertex.y, direction: currentVertex.newDirectionString.toString().toLowerCase() };
                     allPoints.push(point);
                 }
@@ -319,7 +320,7 @@ function isGameOver() {
 
 function endTheGame() {
     clearInterval(clock); // Stop game loop
-    const xTextCoordinate = DrawService.getMaxHorzontalPosition() / 2;
+    const xTextCoordinate = DrawService.getMaxHorizontalPosition() / 2;
     const yTextCoordinate = DrawService.getMinVerticalPosition() / 2;
     DrawService.setFillColor('red');
     DrawService.drawText('Game Over!', xTextCoordinate, yTextCoordinate);
