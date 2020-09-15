@@ -19,7 +19,7 @@
 
  export function  getOneRandomSpawnCoordinate() {
      // Random coordiante to spawn food and initial snake head
-    return Math.random() * (100 - 1) + 1; 
+    return Math.random() * (100 - 1) + 1;
  }
 
  export let lengthToAddToPlayer = 2; // Amount by which to increase snake length after eating food
@@ -42,6 +42,6 @@ let isDarkMode = true;
      isDarkMode = _isDarkMode
  }
 
- export let canvasHeight = '75%';
+ export let canvasHeight = 0.75 * window.innerHeight;
 
- export let canvasWidth = '75%';
+ export let canvasWidth = 0.75 * window.innerWidth;
