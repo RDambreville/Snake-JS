@@ -40,7 +40,7 @@ document.querySelector('#dark-mode-checkbox')
 
 // Add keyup event listener to page for directional keys
 document.querySelector('body')
-    .addEventListener('keyup', updateSnakeDirection); // Don't add parentheses to the method call
+    .addEventListener('keydown', updateSnakeDirection); // Don't add parentheses to the method call
 
 
 
@@ -352,9 +352,9 @@ function updateScreen() {
     drawCurrentScreenState(/*screenState*/);
 }
 
-function updateSnakeDirection(keyUpEvent) {
-    console.log('keyUpEvent', keyUpEvent);
-    switch (keyUpEvent.key) {
+function updateSnakeDirection(keyDownEvent) {
+    console.log('keyDownEvent', keyDownEvent);
+    switch (keyDownEvent.key) {
         case 'w': player.setDirectionString('up'); break;
         case 'ArrowUp': player.setDirectionString('up'); break;
         case 's': player.setDirectionString('down'); break;
