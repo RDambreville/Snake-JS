@@ -42,6 +42,6 @@ let isDarkMode = true;
      isDarkMode = _isDarkMode
  }
 
- export let canvasHeight = 0.75 * window.innerHeight;
+ export let canvasHeight = 0.25 * window.innerHeight;
 
- export let canvasWidth = 0.75 * window.innerWidth;
+ export let canvasWidth = 0.25 * window.innerWidth;

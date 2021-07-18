@@ -191,10 +191,10 @@ function checkAndUpdateGameState() {
 
     if (isGameOver()) {
         console.log('player head', player.head);
-        console.log('min horizontal', DrawService.getMinHorizontalPosition());
-        console.log('max horizontal', DrawService.getMaxHorizontalPosition());
-        console.log('max vertical', DrawService.getMaxVerticalPosition());
-        console.log('min vertical', DrawService.getMinVerticalPosition());
+        console.log('min horizontal', DrawService.getMinXCoordinate());
+        console.log('max horizontal', DrawService.getMaxXCoordinate());
+        console.log('max vertical', DrawService.getMaxYCoordinate());
+        console.log('min vertical', DrawService.getMinYCoordinate());
         endTheGame();
         return;
     }
@@ -235,10 +235,10 @@ function checkAndUpdateGameState() {
 }
 
 function isPlayerOutOfBounds() {
-    return player.head.x >= DrawService.getMaxHorizontalPosition() ||
-        player.head.x <= DrawService.getMinHorizontalPosition() ||
-        player.head.y >= DrawService.getMinVerticalPosition() ||
-        player.head.y <= DrawService.getMaxVerticalPosition();
+    return player.head.x >= DrawService.getMaxXCoordinate() ||
+        player.head.x <= DrawService.getMinXCoordinate() ||
+        player.head.y >= DrawService.getMinYCoordinate() ||
+        player.head.y <= DrawService.getMaxYCoordinate();
 }
 
 function hasPlayerCrashedIntoSelf() {
@@ -251,7 +251,12 @@ function hasPlayerCrashedIntoSelf() {
     // return player.bodyVertices.some(vertex => vertex.x === player.head.x && vertex.y === player.head.y) ||
     //     occupiedPoints.some(point => point.x === player.head.x && point.y === player.head.y);
 
+    // const marginOfSuccess = GameConfig.marginOfSuccess;
+    // return  occupiedPoints.length > 0 ? occupiedPoints.some(point =>
+    //     Math.abs(player.head.x - point.x) < marginOfSuccess && Math.abs(player.head.y - point.y) < marginOfSuccess) : false;
+
     return occupiedPoints.length > 0 ? occupiedPoints.some(point => point.x === player.head.x && point.y === player.head.y) : false;
+
 }
 
 function getAllOccupiedPoints() {
@@ -320,8 +325,8 @@ function isGameOver() {
 
 function endTheGame() {
     clearInterval(clock); // Stop game loop
-    const xTextCoordinate = DrawService.getMaxHorizontalPosition() / 2;
-    const yTextCoordinate = DrawService.getMinVerticalPosition() / 2;
+    const xTextCoordinate = DrawService.getMaxXCoordinate() / 2;
+    const yTextCoordinate = DrawService.getMinYCoordinate() / 2;
     DrawService.setFillColor('red');
     DrawService.drawText('Game Over!', xTextCoordinate, yTextCoordinate);
     releaseResources();
